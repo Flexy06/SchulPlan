@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Einfarbige Variante für "Designte Symbole" (Android 13+): Karte mit ausgestanzten Blöcken -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FF000000"
+        android:fillType="evenOdd"
+        android:pathData="M39,29h30a11,11 0,0 1,11 11v28a11,11 0,0 1,-11 11h-30a11,11 0,0 1,-11 -11v-28a11,11 0,0 1,11 -11z
+            M38,37h3a4,4 0,0 1,4 4v9a4,4 0,0 1,-4 4h-3a4,4 0,0 1,-4 -4v-9a4,4 0,0 1,4 -4z
+            M38,57h3a4,4 0,0 1,4 4v7a4,4 0,0 1,-4 4h-3a4,4 0,0 1,-4 -4v-7a4,4 0,0 1,4 -4z
+            M52.5,37h3a4,4 0,0 1,4 4v2a4,4 0,0 1,-4 4h-3a4,4 0,0 1,-4 -4v-2a4,4 0,0 1,4 -4z
+            M52.5,50h3a4,4 0,0 1,4 4v14a4,4 0,0 1,-4 4h-3a4,4 0,0 1,-4 -4v-14a4,4 0,0 1,4 -4z
+            M67,37h3a4,4 0,0 1,4 4v16a4,4 0,0 1,-4 4h-3a4,4 0,0 1,-4 -4v-16a4,4 0,0 1,4 -4z
+            M67,64h3a4,4 0,0 1,4 4v0a4,4 0,0 1,-4 4h-3a4,4 0,0 1,-4 -4v0a4,4 0,0 1,4 -4z" />
+</vector>

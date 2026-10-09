@@ -1,0 +1,11 @@
+<resources>
+    <color name="ic_bg">#FF5A57CE</color>
+    <color name="splash_bg">#FFFFFBFF</color>
+
+    <!-- Widget (Fallback ohne Material You) -->
+    <color name="widget_bg">#FFFFF8F7</color>
+    <color name="widget_row">#FFFCEAE7</color>
+    <color name="widget_text">#FF231918</color>
+    <color name="widget_text_secondary">#FF534341</color>
+    <color name="widget_accent">#FFB3261E</color>
+</resources>

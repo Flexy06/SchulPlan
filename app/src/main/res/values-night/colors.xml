@@ -1,0 +1,8 @@
+<resources>
+    <color name="splash_bg">#FF1A1110</color>
+    <color name="widget_bg">#FF1A1110</color>
+    <color name="widget_row">#FF2C2120</color>
+    <color name="widget_text">#FFF1DFDC</color>
+    <color name="widget_text_secondary">#FFD8C2BE</color>
+    <color name="widget_accent">#FFFFB4AA</color>
+</resources>
