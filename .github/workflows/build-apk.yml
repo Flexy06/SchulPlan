@@ -1,0 +1,93 @@
+name: Build APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android:
+    name: Android (APK)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Signaturschlüssel aus Secrets holen
+        env:
+          KEYSTORE_B64: ${{ secrets.SIGNING_KEYSTORE_BASE64 }}
+          STORE_PW: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_B64" ]; then
+            mkdir -p signing
+            # Leerzeichen/Zeilenumbrüche aus dem kopierten Secret entfernen
+            if ! printf '%s' "$KEYSTORE_B64" | tr -d ' \r\n\t' | base64 -d > signing/stundenplan.jks 2>/dev/null; then
+              echo "::error::Secret SIGNING_KEYSTORE_BASE64 ist kein gültiges Base64. Bitte den kompletten Wert (nur die lange Zeichenkette, ohne 'Wert:') neu eintragen."
+              exit 1
+            fi
+            if ! keytool -list -keystore signing/stundenplan.jks -storepass "$STORE_PW" > /dev/null 2>&1; then
+              echo "::error::Keystore lässt sich mit SIGNING_STORE_PASSWORD nicht öffnen – Passwort-Secret prüfen."
+              exit 1
+            fi
+            echo "Eigener Schlüssel wird verwendet."
+          else
+            echo "::warning::Kein SIGNING_KEYSTORE_BASE64-Secret – APK wird mit Debug-Schlüssel signiert."
+          fi
+
+      - name: APK bauen
+        env:
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          ./gradlew --no-daemon :app:testReleaseUnitTest :app:assembleRelease
+
+      - name: Schlüssel wieder löschen
+        if: always()
+        run: rm -f signing/stundenplan.jks
+
+      - name: APK umbenennen
+        run: |
+          mkdir -p out
+          cp app/build/outputs/apk/release/app-release.apk "out/SchulPlan-1.0.${{ github.run_number }}.apk"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: out/*.apk
+
+  release:
+    name: Release veröffentlichen
+    needs: [android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Release mit APK
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: SchulPlan 1.0.${{ github.run_number }}
+          body: |
+            `SchulPlan-1.0.${{ github.run_number }}.apk` aufs Handy laden und installieren.
+
+            Automatischer Build von `${{ github.sha }}`.
+          files: dist/*
+          make_latest: true
